@@ -30,7 +30,7 @@ jobs:
     steps:
       - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5
       - name: test pre-deploy
-        uses: navikt/mime-deploy/actions/kotlin/pre-deploy@fcb0afee9a97138ca13f4d4e6c01186da6999b93
+        uses: navikt/mime-deploy/actions/kotlin/pre-deploy@15952f6d384e30651d98cd8a2d41115efbe23c3b
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           DRY_RUN: true
@@ -41,12 +41,12 @@ jobs:
           echo $APPLICATION
           echo $DRAFTS_MAX
       - name: test post-deploy
-        uses: navikt/mime-deploy/actions/kotlin/post-deploy@fcb0afee9a97138ca13f4d4e6c01186da6999b93
+        uses: navikt/mime-deploy/actions/kotlin/post-deploy@15952f6d384e30651d98cd8a2d41115efbe23c3b
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           DRY_RUN: true
       - name: test post-production
-        uses: navikt/mime-deploy/actions/kotlin/post-production@fcb0afee9a97138ca13f4d4e6c01186da6999b93
+        uses: navikt/mime-deploy/actions/kotlin/post-production@15952f6d384e30651d98cd8a2d41115efbe23c3b
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           DRY_RUN: true
