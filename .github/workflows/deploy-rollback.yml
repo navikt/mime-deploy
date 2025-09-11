@@ -36,7 +36,7 @@ jobs:
         with:
           fetch-depth: 0
           ref: ${{ env.VERSION_TAG }}
-      - uses: nais/deploy/actions/deploy@e79279e20795c1a03a92e8ae0bad4b770fd4e6d4 # v2
+      - uses: nais/deploy/actions/deploy@961addd1e4d4211f1a7333ada5fde85f7c9aa5b7 # v2
         name: deploy to ${{ inputs.CLUSTER }}
         env:
           CLUSTER: ${{ inputs.CLUSTER }}
