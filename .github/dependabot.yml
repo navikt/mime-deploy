@@ -13,3 +13,5 @@ updates:
     ignore:
       - dependency-name: "*"
         update-types: ["version-update:semver-patch"]
+      - dependency-name: "nais/deploy"
+      - dependency-name: "navikt/mime-deploy"
