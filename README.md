@@ -1,0 +1,1 @@
+Samling av pipeline-konfigurasjon og scripts for team mime
