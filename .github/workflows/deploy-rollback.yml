@@ -1,0 +1,44 @@
+name: deploy-rollback
+
+on:
+  workflow_call:
+    inputs:
+      NAIS_RESOURCE:
+        required: false
+        type: string
+        default: "nais.yml"
+      NAIS_VARS:
+        required: false
+        type: string
+        default: "nais-prod.json"
+      CLUSTER:
+        required: false
+        type: string
+        default: 'dev-gcp'
+      VERSION:
+        required: false
+        type: string
+        default: "latest"
+
+jobs:
+  deploy-rollback:
+    permissions:
+      contents: read
+      id-token: write
+      actions: read
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set environment variables
+        run: |
+          echo "VERSION_TAG=${{ inputs.VERSION }}" >> $GITHUB_ENV
+          echo "IMAGE=europe-north1-docker.pkg.dev/nais-management-233d/teamdigihot/${{ github.event.repository.name }}:${{ inputs.VERSION }}" >> $GITHUB_ENV
+      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5
+        with:
+          fetch-depth: 0
+          ref: ${{ env.VERSION_TAG }}
+      - uses: nais/deploy/actions/deploy@e79279e20795c1a03a92e8ae0bad4b770fd4e6d4 # v2
+        name: deploy to ${{ inputs.CLUSTER }}
+        env:
+          CLUSTER: ${{ inputs.CLUSTER }}
+          RESOURCE: ${{ inputs.NAIS_RESOURCE }}
+          VARS: ${{ inputs.NAIS_VARS }}

@@ -1,0 +1,39 @@
+name: Deploy kotlin app to prod
+
+on:
+  workflow_call:
+    inputs:
+      NAIS_RESOURCE:
+        required: false
+        type: string
+        default: "nais.yml"
+      NAIS_VARS:
+        required: false
+        type: string
+        default: "nais-prod.json"
+env:
+  VERSION_TAG: ${{ github.event.release.tag_name }}
+
+jobs:
+  deploy-prod:
+    runs-on: ubuntu-latest
+    environment: 'prod-gcp'
+    steps:
+      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5
+        with:
+          fetch-depth: 0
+          ref: ${{ env.VERSION_TAG }}
+      - name: pre-production
+        uses: navikt/mime-deploy/actions/kotlin/pre-production@fcb0afee9a97138ca13f4d4e6c01186da6999b93
+        env:
+          TEAM: 'teammime'
+      - uses: nais/deploy/actions/deploy@e79279e20795c1a03a92e8ae0bad4b770fd4e6d4 # v2
+        name: deploy to prod
+        env:
+          CLUSTER: 'prod-gcp'
+          RESOURCE: ${{ inputs.NAIS_RESOURCE }}
+          VARS: ${{ inputs.NAIS_VARS }}
+      - name: post-production
+        uses: navikt/mime-deploy/actions/kotlin/post-production@fcb0afee9a97138ca13f4d4e6c01186da6999b93
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

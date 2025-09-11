@@ -1,0 +1,105 @@
+name: Bygg og deploy til dev og prod node
+
+on:
+  workflow_call:
+    inputs:
+      BUILD_ENV:
+        required: true
+        type: string
+      NAIS_RESOURCE:
+        required: false
+        type: string
+        default: 'nais.yml'
+      NAIS_VARS_DEV:
+        required: false
+        type: string
+        default: "nais-dev.json"
+      NAIS_VARS_PROD:
+        required: false
+        type: string
+        default: "nais-prod.json"
+      NODE_VERSION:
+        required: false
+        type: string
+        default: '20'
+
+run-name: Bygg og deploy til dev og prod
+
+jobs:
+  test:
+    name: Run tests
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5
+      - name: Set up node
+        uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444 # v5
+        with:
+          node-version: ${{ inputs.NODE_VERSION }}
+          registry-url: https://npm.pkg.github.com
+          cache: npm
+      - name: Install dependencies
+        run: npm ci
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.READER_TOKEN }}
+      - name: Build before tests
+        run: npm run build
+      - name: Run tests
+        run: npm test
+
+  build:
+    needs: [test]
+    name: Build and push docker container
+    permissions:
+      contents: 'read'
+      id-token: 'write'
+    runs-on: ubuntu-latest
+    outputs:
+      image: ${{ steps.docker-build.outputs.image }}
+    steps:
+      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5
+      - uses: nais/docker-build-push@1fae4798c79f4af4c3cdbd3fe65e51f8f3ba2368 # v0
+        id: docker-build
+        with:
+          team: teamdigihot
+          build_args: |
+            BUILD_ENV=${{ env.BUILD_ENV }}
+            CLUSTER=${{ env.CLUSTER }}
+          build_secrets: |
+            "NODE_AUTH_TOKEN=${{ secrets.READER_TOKEN }}"
+          project_id: ${{ vars.NAIS_MANAGEMENT_PROJECT_ID }}
+          identity_provider: ${{ secrets.NAIS_WORKLOAD_IDENTITY_PROVIDER }}
+
+  deploy-dev:
+    name: Deploy dev
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      deployments: write
+    steps:
+      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5
+      - uses: nais/deploy/actions/deploy@e79279e20795c1a03a92e8ae0bad4b770fd4e6d4 # v2
+        env:
+          CLUSTER: dev-gcp
+          RESOURCE: ${{ inputs.NAIS_RESOURCE }}
+          VARS: ${{ inputs.NAIS_VARS_DEV }}
+          IMAGE: ${{ needs.build.outputs.docker_image }}
+
+  deploy-prod:
+    name: Deploy prod
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      deployments: write
+    steps:
+      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5
+      - uses: nais/deploy/actions/deploy@e79279e20795c1a03a92e8ae0bad4b770fd4e6d4 # v2
+        env:
+          CLUSTER: prod-gcp
+          RESOURCE: ${{ inputs.NAIS_RESOURCE }}
+          VARS: ${{ inputs.NAIS_VARS_PROD }}
+          IMAGE: ${{ needs.build.outputs.docker_image }}

@@ -1,0 +1,160 @@
+name: Build and deploy kotlin app to dev
+
+on:
+  workflow_call:
+    inputs:
+      CODEQL_ENABLED:
+        required: false
+        type: boolean
+        default: true
+      BUILD_CACHE:
+        required: false
+        type: string
+        default: "gradle"
+      JAVA_DISTRIBUTION:
+        required: false
+        type: string
+        default: "temurin"
+      JAVA_VERSION:
+        required: false
+        type: string
+        default: "17"
+      NAIS_RESOURCE:
+        required: false
+        type: string
+        default: "nais.yml"
+      NAIS_VARS:
+        required: false
+        type: string
+        default: "nais-dev.json"
+      CLUSTER:
+        required: false
+        type: string
+        default: "dev-gcp"
+      BUILD_SCRIPT:
+        required: false
+        type: string
+        default: "./build.sh"
+      WORKING_DIRECTORY:
+        required: false
+        type: string
+        default: "./"
+      IMAGE_SUFFIX:
+        required: false
+        type: string
+      SKIP_DRAFT_RELEASE:
+        required: false
+        type: boolean
+        default: false
+      DRAFTS_MAX:
+        required: false
+        type: string
+        default: "10"
+      VERSION_TAG:
+        required: false
+        type: string
+    secrets:
+      OPTIONAL_SECRET:
+        required: false
+    outputs:
+      image:
+        description: "Image from nais build push action"
+        value: ${{ jobs.deploy-dev.outputs.image }}
+
+env:
+  TEAM: 'teamdigihot'
+
+jobs:
+  build:
+    permissions:
+      contents: write
+      id-token: write
+      security-events: write
+      actions: read
+    runs-on: ubuntu-latest
+    environment: ${{ inputs.CLUSTER }}
+    outputs:
+      image: ${{ steps.docker-build-push.outputs.image }}
+    steps:
+      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5
+        with:
+          fetch-depth: 0
+      - uses: docker/setup-buildx-action@1583c0f09d26c58c59d25b0eef29792b7ce99d9a # v3
+        name: Set up Docker Buildx
+      - name: Setup java
+        uses: actions/setup-java@a7ab372554b6eb1a8eb25e7d9aec1cc9f3ea1a76 # v5
+        with:
+          distribution: ${{ inputs.JAVA_DISTRIBUTION }}
+          java-version: ${{ inputs.JAVA_VERSION }}
+          cache: ${{ inputs.BUILD_CACHE }}
+      - name: Build and test
+        run: |
+          ${{ inputs.BUILD_SCRIPT }}
+        working-directory: ${{ inputs.WORKING_DIRECTORY }}
+        env:
+          OPTIONAL_SECRET: ${{ secrets.OPTIONAL_SECRET }}
+          READER_TOKEN: ${{ secrets.READER_TOKEN }}
+      - name: Pre-deploy
+        uses: navikt/mime-deploy/actions/kotlin/pre-deploy@fcb0afee9a97138ca13f4d4e6c01186da6999b93
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TEAM: ${{ env.TEAM }}
+          IMAGE_SUFFIX: ${{ inputs.IMAGE_SUFFIX }}
+          DRAFTS_MAX: ${{ inputs.DRAFTS_MAX }}
+          VERSION_TAG: ${{ inputs.VERSION_TAG }}
+      - name: docker-build-push
+        uses: nais/docker-build-push@1fae4798c79f4af4c3cdbd3fe65e51f8f3ba2368 # v0
+        id: docker-build-push
+        with:
+          team: ${{ env.TEAM }}
+          tag: ${{ env.VERSION_TAG }}
+          dockerfile: "${{ inputs.WORKING_DIRECTORY }}Dockerfile"
+          image_suffix: ${{ inputs.IMAGE_SUFFIX }}
+          build_args: |
+            "VERSION_TAG=${{ env.VERSION_TAG }}"
+          build_secrets: |
+            "optional_secret=${{ secrets.OPTIONAL_SECRET }}"
+            "reader_token=${{ secrets.READER_TOKEN }}"
+        env:
+          ACTIONS_RUNTIME_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  deploy:
+    name: Deploy
+    runs-on: ubuntu-latest
+    needs: [build]
+    permissions:
+      contents: write
+      id-token: write
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5
+        with:
+          fetch-depth: 0
+      - name: Deploy to ${{ inputs.CLUSTER }}
+        uses: nais/deploy/actions/deploy@e79279e20795c1a03a92e8ae0bad4b770fd4e6d4 # v2
+        env:
+          CLUSTER: ${{ inputs.CLUSTER }}
+          RESOURCE: ${{ inputs.NAIS_RESOURCE }}
+          VARS: ${{ inputs.NAIS_VARS }}
+      - name: Post-deploy
+        uses: navikt/mime-deploy/actions/kotlin/post-deploy@fcb0afee9a97138ca13f4d4e6c01186da6999b93
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Draft release
+        if: ${{ !inputs.SKIP_DRAFT_RELEASE }}
+        uses: ncipollo/release-action@b7eabc95ff50cbeeedec83973935c8f306dfcd0b # v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag: ${{ env.VERSION_TAG }}
+          name: ${{ env.DRAFT_NAME }}
+          body: ${{ env.CHANGE_LOG }}
+          draft: true
+          prerelease: false
+  CodeQL:
+    if: ${{ inputs.CODEQL_ENABLED }}
+    uses: navikt/mime-deploy/.github/workflows/codeql.yml@5082fa60b85fb6b297355800360be2a70d41296a
+    with:
+      LANGUAGE: 'kotlin'
+    secrets:
+      OPTIONAL_SECRET: ${{ secrets.OPTIONAL_SECRET }}
+      READER_TOKEN: ${{ secrets.READER_TOKEN }}
