@@ -1,0 +1,52 @@
+name: tag-and-release
+on:
+  push:
+    paths-ignore:
+      - "**.md"
+      - ".gitignore"
+      - "LICENCE"
+      - "CODEOWNERS"
+    branches:
+      - main
+jobs:
+  tag-and-release:
+    permissions:
+      contents: write
+    name: Tag/Release the github actions
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5
+      - name: push tag version
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          git remote set-url origin "https://${GITHUB_ACTOR}:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
+          git tag -f $(cat actions/version)
+          git push -f --tags
+  test-action:
+    name: Test the actions
+    needs: tag-and-release
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5
+      - name: test pre-deploy
+        uses: navikt/mime-deploy/actions/kotlin/pre-deploy@fcb0afee9a97138ca13f4d4e6c01186da6999b93
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          DRY_RUN: true
+      - name: display variables
+        run: |
+          echo $VERSION_TAG
+          echo $IMAGE
+          echo $APPLICATION
+          echo $DRAFTS_MAX
+      - name: test post-deploy
+        uses: navikt/mime-deploy/actions/kotlin/post-deploy@fcb0afee9a97138ca13f4d4e6c01186da6999b93
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          DRY_RUN: true
+      - name: test post-production
+        uses: navikt/mime-deploy/actions/kotlin/post-production@fcb0afee9a97138ca13f4d4e6c01186da6999b93
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          DRY_RUN: true
