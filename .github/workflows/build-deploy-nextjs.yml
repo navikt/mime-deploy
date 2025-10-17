@@ -29,14 +29,9 @@ jobs:
     timeout-minutes: 10
     outputs:
       docker_image: ${{ steps.docker-build-push.outputs.image }}
-      version_tag: ${{ steps.version-tag.outputs.VERSION_TAG}}
     steps:
       - name: Checkout code
         uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5
-      - name: pre-deploy
-        uses: navikt/mime-deploy/actions/nextjs/pre-deploy@fcb0afee9a97138ca13f4d4e6c01186da6999b93
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Bygg og push Docker image
         uses: nais/docker-build-push@1fae4798c79f4af4c3cdbd3fe65e51f8f3ba2368 # v0
         id: docker-build-push
@@ -44,7 +39,7 @@ jobs:
           team: 'teamdigihot'
           identity_provider: ${{ secrets.NAIS_WORKLOAD_IDENTITY_PROVIDER }}
           project_id: ${{ vars.NAIS_MANAGEMENT_PROJECT_ID }}
-          tag: ${{ env.VERSION_TAG }}
+          image_suffix: ${{ inputs.BUILD_ENV }}
           build_args: |
             BUILD_ENV=${{ inputs.BUILD_ENV }}
             IMAGE_PROXY_URL=${{ inputs.IMAGE_PROXY_URL }}
