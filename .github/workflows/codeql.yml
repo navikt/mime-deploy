@@ -25,11 +25,11 @@ jobs:
         with:
           fetch-depth: 0
       - name: Setup CodeQL
-        uses: github/codeql-action/init@d3678e237b9c32a6c9bffb3315c335f976f3549f # v3
+        uses: github/codeql-action/init@16140ae1a102900babc80a33c44059580f687047 # v3
         with:
           external-repository-token: ${{ secrets.GITHUB_TOKEN }}
           languages: ${{ (inputs.LANGUAGE == 'node' && env.javascript) || (inputs.LANGUAGE == 'kotlin' && env.kotlin) || inputs.LANGUAGE }}
       - name: Perform CodeQL Analysis
-        uses: github/codeql-action/analyze@d3678e237b9c32a6c9bffb3315c335f976f3549f # v3
+        uses: github/codeql-action/analyze@16140ae1a102900babc80a33c44059580f687047 # v3
         with:
           category: "/language:${{ (inputs.LANGUAGE == 'node' &&  env.javascript) || (inputs.LANGUAGE == 'kotlin' && env.kotlin) || inputs.LANGUAGE }}"
