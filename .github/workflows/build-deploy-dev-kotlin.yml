@@ -135,7 +135,7 @@ jobs:
           CLUSTER: ${{ inputs.CLUSTER }}
           RESOURCE: ${{ inputs.NAIS_RESOURCE }}
           VARS: ${{ inputs.NAIS_VARS }}
-          IMAGE: ${{ needs.build.outputs.docker_image }}
+          IMAGE: ${{ needs.build.outputs.image }}
       - name: Post-deploy
         uses: navikt/mime-deploy/actions/kotlin/post-deploy@fcb0afee9a97138ca13f4d4e6c01186da6999b93
         env:
