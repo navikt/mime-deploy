@@ -141,6 +141,7 @@ jobs:
         uses: navikt/mime-deploy/actions/kotlin/post-deploy@fcb0afee9a97138ca13f4d4e6c01186da6999b93
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          VERSION_TAG: ${{ env.VERSION_TAG }}
       - name: Draft release
         if: ${{ !inputs.SKIP_DRAFT_RELEASE }}
         uses: ncipollo/release-action@b7eabc95ff50cbeeedec83973935c8f306dfcd0b # v1
