@@ -15,6 +15,9 @@ on:
       NAIS_RESOURCE:
         required: true
         type: string
+      ALTERNATIVER_BACKEND_AUDIENCE:
+        required: true
+        type: string
 
 jobs:
   build:
@@ -45,6 +48,7 @@ jobs:
             IMAGE_PROXY_URL=${{ inputs.IMAGE_PROXY_URL }}
             CDN_URL=${{ inputs.CDN_URL }}
             FARO_URL=${{ env.FARO_URL }}
+            ALTERNATIVER_BACKEND_AUDIENCE=${{ inputs.ALTERNATIVER_BACKEND_AUDIENCE }}
           build_secrets: |
             NODE_AUTH_TOKEN=${{ secrets.READER_TOKEN }}
 
