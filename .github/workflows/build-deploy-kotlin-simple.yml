@@ -108,7 +108,7 @@ jobs:
           VARS: ${{ inputs.NAIS_VARS }}
   CodeQL:
     if: ${{ inputs.CODEQL_ENABLED }}
-    uses: navikt/mime-deploy/.github/workflows/codeql.yml@5082fa60b85fb6b297355800360be2a70d41296a
+    uses: navikt/mime-deploy/.github/workflows/codeql.yml@8ab9b1f66334fcc3a0c4501c77fe9902400e8c28
     with:
       LANGUAGE: 'kotlin'
     secrets:
