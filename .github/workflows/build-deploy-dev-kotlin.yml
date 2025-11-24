@@ -83,7 +83,7 @@ jobs:
       - uses: docker/setup-buildx-action@1583c0f09d26c58c59d25b0eef29792b7ce99d9a # v3
         name: Set up Docker Buildx
       - name: Setup java
-        uses: actions/setup-java@a7ab372554b6eb1a8eb25e7d9aec1cc9f3ea1a76 # v5
+        uses: actions/setup-java@46c56d6f92c88cf540acf95a12a4a41197499222 # v5
         with:
           distribution: ${{ inputs.JAVA_DISTRIBUTION }}
           java-version: ${{ inputs.JAVA_VERSION }}
