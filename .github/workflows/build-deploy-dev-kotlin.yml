@@ -157,6 +157,3 @@ jobs:
     uses: navikt/mime-deploy/.github/workflows/codeql.yml@7257833a971c8742f03180514652d0e331c32bb9
     with:
       LANGUAGE: 'kotlin'
-    secrets:
-      READER_TOKEN: ${{ secrets.READER_TOKEN }}
-  
