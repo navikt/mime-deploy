@@ -48,7 +48,7 @@ jobs:
         with:
           fetch-depth: 0
       - name: Setup CodeQL
-        uses: github/codeql-action/init@d3678e237b9c32a6c9bffb3315c335f976f3549f # v3
+        uses: github/codeql-action/init@fdbfb4d2750291e159f0156def62b853c2798ca2 # v3
         with:
           external-repository-token: ${{ secrets.GITHUB_TOKEN }}
           languages: ${{ (inputs.LANGUAGE == 'node' && env.javascript) || (inputs.LANGUAGE == 'kotlin' && env.kotlin) || inputs.LANGUAGE }}
@@ -72,6 +72,6 @@ jobs:
         uses: gradle/actions/dependency-submission@4d9f0ba0025fe599b4ebab900eb7f3a1d93ef4c2 # v5
 
       - name: Perform CodeQL Analysis
-        uses: github/codeql-action/analyze@d3678e237b9c32a6c9bffb3315c335f976f3549f # v3
+        uses: github/codeql-action/analyze@fdbfb4d2750291e159f0156def62b853c2798ca2 # v3
         with:
           category: "/language:${{ (inputs.LANGUAGE == 'node' &&  env.javascript) || (inputs.LANGUAGE == 'kotlin' && env.kotlin) || inputs.LANGUAGE }}"
