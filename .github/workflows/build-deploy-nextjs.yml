@@ -34,7 +34,7 @@ jobs:
       docker_image: ${{ steps.docker-build-push.outputs.image }}
     steps:
       - name: Checkout code
-        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5
+        uses: actions/checkout@1af3b93b6815bc44a9784bd300feb67ff0d1eeb3 # v5
       - name: Bygg og push Docker image
         uses: nais/docker-build-push@1fae4798c79f4af4c3cdbd3fe65e51f8f3ba2368 # v0
         id: docker-build-push
@@ -62,7 +62,7 @@ jobs:
     timeout-minutes: 10
     steps:
       - name: Sjekk ut koden
-        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5
+        uses: actions/checkout@1af3b93b6815bc44a9784bd300feb67ff0d1eeb3 # v5
       - name: Deploy
         uses: nais/deploy/actions/deploy@e79279e20795c1a03a92e8ae0bad4b770fd4e6d4 # v2
         env:
