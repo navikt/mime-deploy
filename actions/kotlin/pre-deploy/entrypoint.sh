@@ -2,7 +2,6 @@
 set -e
 
 GITHUB_URL="https://api.github.com/repos/$GITHUB_REPOSITORY"
-DOCKER_REPO="europe-north1-docker.pkg.dev/nais-management-233d/$TEAM"
 # Checking if too many drafts before starting the deploy
 DRAFTS=$(curl -s -H "Authorization: token $GITHUB_TOKEN" "$GITHUB_URL/releases?per_page=20" | jq -r '. | map(select(.draft == true)) | length')
 if [[ "$DRAFTS" -gt "$DRAFTS_MAX" ]]; then
@@ -25,19 +24,12 @@ if [ -z "$VERSION_TAG" ]; then
 else
   VERSION_TAG=$VERSION_TAG
 fi
-if [ -z "$DOCKER_IMAGE" ]; then
-  DOCKER_IMAGE=$DOCKER_REPO/$APPLICATION
-fi
-
 if [ -z "$IMAGE_SUFFIX" ]; then
-  IMAGE=$DOCKER_IMAGE:$VERSION_TAG
   DRAFT_NAME="$APPLICATION $VERSION_TAG"
 else
-  IMAGE=$DOCKER_IMAGE-$IMAGE_SUFFIX:$VERSION_TAG
   DRAFT_NAME="$APPLICATION/$IMAGE_SUFFIX $VERSION_TAG"
 fi
 
 echo "VERSION_TAG=$VERSION_TAG" >> "$GITHUB_ENV"
 echo "APPLICATION=$APPLICATION" >> "$GITHUB_ENV"
-echo "IMAGE=$IMAGE" >> "$GITHUB_ENV"
 echo "DRAFT_NAME=$DRAFT_NAME" >> "$GITHUB_ENV"
