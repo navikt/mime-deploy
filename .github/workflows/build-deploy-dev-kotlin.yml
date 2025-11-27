@@ -53,9 +53,6 @@ on:
       VERSION_TAG:
         required: false
         type: string
-    secrets:
-      OPTIONAL_SECRET:
-        required: false
     outputs:
       image:
         description: "Image from nais build push action"
@@ -93,7 +90,6 @@ jobs:
           ${{ inputs.BUILD_SCRIPT }}
         working-directory: ${{ inputs.WORKING_DIRECTORY }}
         env:
-          OPTIONAL_SECRET: ${{ secrets.OPTIONAL_SECRET }}
           READER_TOKEN: ${{ secrets.READER_TOKEN }}
       - name: Pre-deploy
         uses: navikt/mime-deploy/actions/kotlin/pre-deploy@09600d955944b76b58c3e257e583861af6140f17
@@ -114,7 +110,6 @@ jobs:
           build_args: |
             "VERSION_TAG=${{ env.VERSION_TAG }}"
           build_secrets: |
-            "optional_secret=${{ secrets.OPTIONAL_SECRET }}"
             "reader_token=${{ secrets.READER_TOKEN }}"
         env:
           ACTIONS_RUNTIME_TOKEN: ${{ secrets.GITHUB_TOKEN }}
