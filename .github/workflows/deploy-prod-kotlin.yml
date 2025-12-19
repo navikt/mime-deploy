@@ -30,7 +30,7 @@ jobs:
       - name: pre-production
         uses: navikt/mime-deploy/actions/kotlin/pre-production@fcb0afee9a97138ca13f4d4e6c01186da6999b93
         env:
-          TEAM: 'teammime'
+          TEAM: 'teamdigihot'
       - uses: nais/deploy/actions/deploy@e79279e20795c1a03a92e8ae0bad4b770fd4e6d4 # v2
         name: deploy to prod
         env:
