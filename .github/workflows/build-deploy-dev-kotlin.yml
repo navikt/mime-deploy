@@ -100,7 +100,7 @@ jobs:
           DRAFTS_MAX: ${{ inputs.DRAFTS_MAX }}
           VERSION_TAG: ${{ inputs.VERSION_TAG }}
       - name: docker-build-push
-        uses: nais/docker-build-push@1fae4798c79f4af4c3cdbd3fe65e51f8f3ba2368 # v0
+        uses: nais/docker-build-push@45d352fb62fb52ccb5ff6cba22c047fa02b35321 # v0
         id: docker-build-push
         with:
           team: ${{ env.TEAM }}
