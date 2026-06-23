@@ -33,7 +33,7 @@ jobs:
       contents: read
     steps:
       - name: Checkout code
-        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v5
       - name: Set up node
         uses: actions/setup-node@2028fbc5c25fe9cf00d9f06a71cc4710d4507903 # v5
         with:
@@ -59,7 +59,7 @@ jobs:
     outputs:
       image: ${{ steps.docker-build.outputs.image }}
     steps:
-      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v5
       - uses: nais/docker-build-push@1fae4798c79f4af4c3cdbd3fe65e51f8f3ba2368 # v0
         id: docker-build
         with:
@@ -80,7 +80,7 @@ jobs:
       contents: read
       deployments: write
     steps:
-      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v5
       - uses: nais/deploy/actions/deploy@e79279e20795c1a03a92e8ae0bad4b770fd4e6d4 # v2
         env:
           CLUSTER: dev-gcp
@@ -96,7 +96,7 @@ jobs:
       contents: read
       deployments: write
     steps:
-      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v5
       - uses: nais/deploy/actions/deploy@e79279e20795c1a03a92e8ae0bad4b770fd4e6d4 # v2
         env:
           CLUSTER: prod-gcp
