@@ -55,7 +55,7 @@ jobs:
 
       - name: Setup java
         if: ${{ inputs.LANGUAGE == 'kotlin' }}
-        uses: actions/setup-java@46c56d6f92c88cf540acf95a12a4a41197499222 # v5
+        uses: actions/setup-java@668c1ea991737ea087e51dbf0bcf7fd41cbc20ee # v5
         with:
           distribution: ${{ inputs.JAVA_DISTRIBUTION }}
           java-version: ${{ inputs.JAVA_VERSION }}
