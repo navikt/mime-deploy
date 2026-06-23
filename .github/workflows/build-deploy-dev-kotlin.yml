@@ -150,7 +150,7 @@ jobs:
           prerelease: false
   CodeQL:
     if: ${{ inputs.CODEQL_ENABLED }}
-    uses: navikt/mime-deploy/.github/workflows/codeql.yml@7257833a971c8742f03180514652d0e331c32bb9
+    uses: navikt/mime-deploy/.github/workflows/codeql.yml@f56403129ae531c7f32d180e4e84bd8613355003
     with:
       LANGUAGE: 'kotlin'
       JAVA_VERSION: ${{ inputs.JAVA_VERSION }}
