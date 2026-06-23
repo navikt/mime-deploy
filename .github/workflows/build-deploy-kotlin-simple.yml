@@ -62,7 +62,7 @@ jobs:
       - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5
         with:
           fetch-depth: 0
-      - uses: docker/setup-buildx-action@1583c0f09d26c58c59d25b0eef29792b7ce99d9a # v3
+      - uses: docker/setup-buildx-action@c887d9748da14dcb42b11cf8bcc773b301ea55b5 # v3
         name: Set up Docker Buildx
       - name: Setup java
         uses: actions/setup-java@46c56d6f92c88cf540acf95a12a4a41197499222 # v5
