@@ -78,7 +78,7 @@ jobs:
           OPTIONAL_SECRET: ${{ secrets.OPTIONAL_SECRET }}
           READER_TOKEN: ${{ secrets.READER_TOKEN }}
       - name: docker-build-push
-        uses: nais/docker-build-push@1fae4798c79f4af4c3cdbd3fe65e51f8f3ba2368 # v0
+        uses: nais/docker-build-push@05dbb6091b30bd84279c6d64a45ef8782fd410a5 # v0
         id: docker-build-push
         with:
           team: 'teamdigihot'
