@@ -46,7 +46,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           DRY_RUN: true
       - name: test post-production
-        uses: navikt/mime-deploy/actions/kotlin/post-production@fcb0afee9a97138ca13f4d4e6c01186da6999b93
+        uses: navikt/mime-deploy/actions/kotlin/post-production@c6be9050671632735becf3e368d3cb6c90affe92
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           DRY_RUN: true
