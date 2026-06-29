@@ -92,7 +92,7 @@ jobs:
         env:
           READER_TOKEN: ${{ secrets.READER_TOKEN }}
       - name: Pre-deploy
-        uses: navikt/mime-deploy/actions/kotlin/pre-deploy@09600d955944b76b58c3e257e583861af6140f17
+        uses: navikt/mime-deploy/actions/kotlin/pre-deploy@c6be9050671632735becf3e368d3cb6c90affe92
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           TEAM: ${{ env.TEAM }}
