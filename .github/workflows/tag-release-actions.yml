@@ -30,7 +30,7 @@ jobs:
     steps:
       - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v5
       - name: test pre-deploy
-        uses: navikt/mime-deploy/actions/kotlin/pre-deploy@fcb0afee9a97138ca13f4d4e6c01186da6999b93
+        uses: navikt/mime-deploy/actions/kotlin/pre-deploy@e78597da698c5b1a16f50ad9770aba8dd40cc6b2
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           DRY_RUN: true
