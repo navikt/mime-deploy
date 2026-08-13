@@ -31,7 +31,7 @@ jobs:
         uses: navikt/mime-deploy/actions/kotlin/pre-production@fcb0afee9a97138ca13f4d4e6c01186da6999b93
         env:
           TEAM: 'teamdigihot'
-      - uses: nais/deploy/actions/deploy@fc3eae3edebabdf67f7592102ae16176d5ba3b5f # v2
+      - uses: nais/deploy/actions/deploy@849e900e3cfa7faf7ad1532bb3a3e6499c932199 # v2
         name: deploy to prod
         env:
           CLUSTER: 'prod-gcp'
